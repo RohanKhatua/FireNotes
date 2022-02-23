@@ -28,73 +28,71 @@ class _noteAdderState extends State<noteAdder> {
       padding: const EdgeInsets.all(8.0),
       child: FloatingActionButton(
         onPressed: () {
+          AlertDialog noteAdder = AlertDialog(
+            title: const Text("Add Note"),
+            content: Flexible(
+              // width: 350,
+              // height: 200,
+              fit: FlexFit.tight,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      // minLines: 1,
+                      // maxLi: 2,
+                      controller: titleController,
+                      decoration: const InputDecoration(hintText: "Title"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter a title";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    TextFormField(
+                      controller: contentController,
+                      decoration: const InputDecoration(hintText: "Content"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Note cannot be empty";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.pop(context);
+                            setState(() {
+                              Map<String, String> currentNoteData = {
+                                "title": titleController.text,
+                                "content": contentController.text
+                              };
+                              createNote(currentNoteData);
+                              // notes.add(currentNoteData);
+
+                              titleController.text = "";
+                              contentController.text = "";
+                            });
+                          }
+                        },
+                        child: const Text("Submit"))
+                  ],
+                ),
+              ),
+            ),
+          );
+
           showDialog(
               context: context,
-              builder: (BuildContext builder) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  title: const Text("Add Note"),
-                  content: Flexible(
-                    // width: 350,
-                    // height: 200,
-                    fit: FlexFit.tight,
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            // minLines: 1,
-                            // maxLi: 2,
-                            controller: titleController,
-                            decoration:
-                                const InputDecoration(hintText: "Title"),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Enter a title";
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
-                          TextFormField(
-                            controller: contentController,
-                            decoration:
-                                const InputDecoration(hintText: "Content"),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Note cannot be empty";
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    Map<String, String> currentNoteData = {
-                                      "title": titleController.text,
-                                      "content": contentController.text
-                                    };
-                                    createNote(currentNoteData);
-                                    // notes.add(currentNoteData);
-
-                                    titleController.text = "";
-                                    contentController.text = "";
-                                  });
-                                }
-                              },
-                              child: const Text("Submit"))
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+              builder: (BuildContext context) {
+                return noteAdder;
               });
         },
         child: const Icon(Icons.add),
